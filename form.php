@@ -1,4 +1,6 @@
-
+<?php
+include "config.php";
+?>
 
 
 <!DOCTYPE html>
@@ -15,15 +17,16 @@
     <h1>User Registration Form</h1>
 <form  action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" name="StudentsInfo"  >
     <label for='studentName'>Name</label><br>
-    <input type='text' name='studentName' id='studentName' class='mb-2' required > <br>
+    <input type='text' name='studentName' id='studentName' class='mb-2' required
+    > <br>
     <label for= 'Email'>Email</label><br>
-    <input type='email' name='email' id='Email' class='mb-2' required> <br>
+    <input type='email' name='email' id='Email' class='mb-2' required > <br>
     <label for= 'Gender'>Gender</label><br>
     <input type="radio" name="Gender" value="Female" id='Gender' > 
     <label>Female</label><br>
     <input type="radio" name="Gender" value="Male" class='mb-2' >
     <label>Male</label><br>
-    <input type="checkbox" name="agree" id="agree" class='mb-4'>
+    <input type="checkbox" name="agree" id="agree" class='mb-4' >
     <label for="agree">Recieve Emails from Us</label><br>
     <input type="submit" class="btn btn-success" name="submit" value="Submit" class='mb-2'>
 </form> 
@@ -32,7 +35,7 @@
 </html>
 <?php
 
-include "config.php";
+
 if($_SERVER["REQUEST_METHOD"] == 'POST' ){
     $name = mysqli_real_escape_string($conn, $_POST["studentName"]);
     $email = mysqli_real_escape_string($conn, $_POST["email"]);
@@ -46,28 +49,39 @@ if (empty($name) || empty($email) || empty($gender)) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == 'POST' ) {
-    
 
-$sql = "INSERT INTO studentsInfo (name, email, gender, receive_emails) 
-        VALUES ('$name', '$email', '$gender', $agree)";
 
-$sendQury=mysqli_query($conn,$sql);
+   
+   
 
-if(!$sendQury){
+    /////Insert Data
+    if(!isset($row['name'])) {
+        // Insert new record if $row is not set or ID is not present
+        $sql = "INSERT INTO studentsInfo (name, email, gender, receive_emails) 
+                VALUES ('$name', '$email', '$gender', $agree)";
+        $sendQuery = mysqli_query($conn, $sql);
+    }
 
-    echo " <br> Error Unable to  Insert Data In Table studentsInfo ";
-    exit;
-}
-// echo "<br> Insert Data In Table studentsInfo Successfuly";
+    if (!$sendQuery) {
+        echo "<br> Error: Unable to insert or update data in studentsInfo table.";
+        exit;
+    }
+echo "<br> Insert Data In Table studentsInfo Successfuly";
 
 
 /////// After Success Sending data go to displayFormData
+
+
 
 header("Location: displayFormData.php");
         exit;
 
 }
 
-    ?>
 
+
+
+mysqli_close($conn);
+
+    ?>
 
